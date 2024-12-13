@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Simple Crawler</title>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Simple Crawler</h1>
+
+<!-- Форма за въвеждане на URL и тагове -->
+<form action="/run-crawler" method="post">
+    <label for="url">Въведете URL:</label>
+    <input type="text" name="url" id="url" placeholder="Например: http://apple.com" required><br><br>
+
+    <label for="tags">Изберете тагове за парсинга:</label><br><br>
+    <input type="checkbox" name="tags" value="h1"> h1<br>
+    <input type="checkbox" name="tags" value="h2"> h2<br>
+    <input type="checkbox" name="tags" value="h3"> h3<br>
+    <input type="checkbox" name="tags" value="p"> p<br>
+    <input type="checkbox" name="tags" value="a"> a<br><br>
+
+    <label for="additional-tags">Въведете допълнителни тагове(разделени със запетая):</label><br>
+    <input type="text" name="additional_tags" id="additional-tags" placeholder="Например: nav, div"><br><br>
+
+    <button type="submit">Парсинг</button>
+</form><br>
+
+<form action="/import-csv" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".csv" required>
+    <button type="submit">Импортиране на CSV</button>
+</form><br>
+
+<!-- Грешки -->
+{% if error %}
+    <p style="color:red">{{ error }}</p>
+{% endif %}
+
+{% if error_message %}
+    <p class="error">{{ error_message | safe }}</p>
+{% endif %}
+
+<!-- Има резултати? => покажи таблицa -->
+{% if parsed_data %}
+<div class="results-header">
+    <h2>Результати на парсинга</h2>
+
+    <!-- Бутон за експорта-->
+    <form action="/export-csv" method="post">
+        <button type="submit" class="button">Експортиране в CSV</button>
+    </form>
+
+    <!-- Бутон за изтриване-->
+    <form action="/clear-history" method="post">
+    <button class="button-red">Изтрийте историята на парсинга</button>
+    </form>
+</div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Сайт</th>
+                <th>Тагове</th>
+                <th>Резултат</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in parsed_data %}
+                <tr>
+                    <td>{{ data.url }}</td>
+                    <td>{{ data.tags }}</td>
+                    <td>
+                        {% if 'Парсинга е забранен' in data.content %}
+                            <span style="color: red;">{{ data.content }}</span>
+                        {% else %}
+                            {{ data.content }}
+                        {% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Няма данни!</p>
+{% endif %}
+
+</div>
+</body>
+</html>
