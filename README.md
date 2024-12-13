@@ -1,2 +1,7 @@
 # simple-crawler
- Уеб базирани системи за извличане на информация. 4 курс, 7 сем
+
+run:
+
+```bash
+docker compose up -d
+```
