@@ -50,7 +50,7 @@ def index():
 def run_crawler():
     try:
         url = request.form['url']
-        selected_tags = request.form.getlist('tags')  # Тагове от чекбокси
+        selected_tags = request.form.getlist('tags')  # избрани тагове от чекбокси
         additional_tags = request.form.get('additional_tags', '')  # Тагове от текстово поле
 
         if not url:
